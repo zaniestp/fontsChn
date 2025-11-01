@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 1. Title Changed -->
+    <title>Chinese Fonts Generator</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load html2canvas library for PNG generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" xintegrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibjNQVX1uKNLhUNdLNBFXgEV4HRFAdbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Load Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&family=Long+Cang&family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=ZCOOL+KuaiLe&family=ZCOOL+QingKe+HuangYou&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        #font-preview {
+            font-family: '"Noto Sans SC"', 'sans-serif';
+            font-size: 2.25rem; /* text-4xl */
+            line-height: 2.5rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            background-color: #f9fafb; /* bg-gray-50 */
+            padding: 1.5rem; /* p-6 */
+        }
+        #preview-container {
+             w-full bg-gray-50 border border-gray-200 rounded-lg min-h-[150px]
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl mx-auto">
+        <div class="bg-white shadow-xl rounded-lg p-6 md:p-10">
+            
+            <!-- Header -->
+            <!-- 2. H1 Title Changed -->
+            <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-2">
+                Chinese Fonts Generator
+            </h1>
+            <p class="text-center text-gray-500 mb-6">
+                Type Chinese text below to see it in different fonts.
+            </p>
+
+            <!-- Input Textarea -->
+            <div class="mb-6">
+                <label for="text-input" class="block text-sm font-medium text-gray-700 mb-2">Your Text (e.g., 你好世界)</label>
+                <textarea
+                    id="text-input"
+                    rows="4"
+                    class="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out text-lg"
+                    placeholder="你好世界..."
+                >你好世界</textarea>
+            </div>
+
+            <!-- Font Selector -->
+            <div class="mb-6">
+                <label for="font-select" class="block text-sm font-medium text-gray-700 mb-2">Choose a Font Style</label>
+                <select id="font-select" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+            
+            <!-- Download Link -->
+            <div class="mb-6 -mt-2 text-right">
+                <a 
+                    id="font-download-link" 
+                    href="#" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                >
+                    View on Google Fonts &rarr;
+                </a>
+            </div>
+
+            <!-- Output Preview Header -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-700">Preview</h2>
+                
+                <!-- Download Button -->
+                <button
+                    id="download-btn"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Download PNG
+                </button>
+            </div>
+
+            <!-- Output Preview -->
+            <div id="preview-container" class="w-full bg-gray-50 border border-gray-200 rounded-lg min-h-[150px]">
+                <p id="font-preview" class="text-gray-800">
+                    <!-- Text will be injected here by JavaScript -->
+                </p>
+            </div>
+
+        </div>
+        
+        <!-- NEW: Credits Trigger -->
+        <div class="text-center mt-4">
+            <button id="show-credits-btn" class="text-sm text-gray-500 hover:text-gray-700 hover:underline">
+                Credits
+            </button>
+        </div>
+        
+    </div>
+
+    <!-- NEW: Credit Modal -->
+    <div id="credit-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center" style="z-index: 50;">
+        <div class="relative mx-auto p-6 border w-full max-w-md shadow-lg rounded-lg bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Enjoying the app?</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">
+                        If you like this app, please feel free to leave feedback at:
+                        <a href="https://github.com/zaniestp" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">
+                            https://github.com/zaniestp
+                        </a>
+                    </p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button
+                        id="close-modal-btn"
+                        class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        Ok, I'll do
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Source of Truth for Fonts ---
+        const fontData = {
+            'noto-sans-sc': {
+                name: 'Noto Sans SC (Default Sans-Serif)',
+                family: '"Noto Sans SC", sans-serif',
+                url: 'https://fonts.google.com/specimen/Noto+Sans+SC'
+            },
+            'noto-serif-sc': {
+                name: 'Noto Serif SC (Formal Serif)',
+                family: '"Noto Serif SC", serif',
+                url: 'https://fonts.google.com/specimen/Noto+Serif+SC'
+            },
+            'zcool-huangyou': {
+                name: 'ZCOOL HuangYou (Bold / Fun)',
+                family: '"ZCOOL QingKe HuangYou", cursive',
+                url: 'https://fonts.google.com/specimen/ZCOOL+QingKe+HuangYou'
+            },
+            'zcool-xiaowei': {
+                name: 'ZCOOL XiaoWei (Elegant Serif)',
+                family: '"ZCOOL XiaoWei", serif',
+                url: 'https://fonts.google.com/specimen/ZCOOL+XiaoWei'
+            },
+            'zcool-kuaile': {
+                name: 'ZCOOL KuaiLe (Bubbly / Happy)',
+                family: '"ZCOOL KuaiLe", cursive',
+                url: 'https://fonts.google.com/specimen/ZCOOL+KuaiLe'
+            },
+            'ma-shan-zheng': {
+                name: 'Ma Shan Zheng (Brush Script)',
+                family: '"Ma Shan Zheng", cursive',
+                url: 'https://fonts.google.com/specimen/Ma+Shan+Zheng'
+            },
+            'long-cang': {
+                name: 'Long Cang (Flowing Script)',
+                family: '"Long Cang", cursive',
+                url: 'https://fonts.google.com/specimen/Long+Cang'
+            },
+            'liu-jian-mao-cao': {
+                name: 'Liu Jian Mao Cao (Fast Cursive)',
+                family: '"Liu Jian Mao Cao", cursive',
+                url: 'https://fonts.google.com/specimen/Liu+Jian+Mao+Cao'
+            }
+        };
+
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Get DOM Elements ---
+            const textInput = document.getElementById('text-input');
+            const fontSelect = document.getElementById('font-select');
+            const fontPreview = document.getElementById('font-preview');
+            const downloadLink = document.getElementById('font-download-link');
+            const downloadBtn = document.getElementById('download-btn');
+            
+            // NEW: Modal DOM Elements
+            const creditModal = document.getElementById('credit-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const showCreditsBtn = document.getElementById('show-credits-btn');
+
+            // --- Function to populate the dropdown ---
+            function populateDropdown() {
+                for (const key in fontData) {
+                    const font = fontData[key];
+                    const option = document.createElement('option');
+                    option.value = key; 
+                    option.textContent = font.name;
+                    fontSelect.appendChild(option);
+                }
+            }
+
+            // --- Function to update the preview ---
+            function updatePreview() {
+                const text = textInput.value;
+                const selectedKey = fontSelect.value;
+                const selectedFont = fontData[selectedKey];
+                
+                // 1. Update text
+                if (text.trim() === '') {
+                    fontPreview.textContent = '...';
+                    fontPreview.classList.add('text-gray-400');
+                    downloadBtn.disabled = true; // Disable download if no text
+                } else {
+                    fontPreview.textContent = text;
+                    fontPreview.classList.remove('text-gray-400');
+                    downloadBtn.disabled = false; // Enable download
+                }
+                
+                // 2. Update font style
+                fontPreview.style.fontFamily = selectedFont.family;
+                
+                // 3. Update download link
+                downloadLink.href = selectedFont.url;
+            }
+
+            // --- Function to download the preview as PNG ---
+            async function downloadPreviewAsPNG() {
+                const element = document.getElementById('font-preview');
+                const originalBtnText = downloadBtn.textContent;
+                
+                // Set loading state
+                downloadBtn.textContent = 'Generating...';
+                downloadBtn.disabled = true;
+                
+                try {
+                    // Use html2canvas to render the element
+                    const canvas = await html2canvas(element, {
+                        scale: 4, // 4x scale = high resolution (simulates high DPI)
+                        useCORS: true, // Allows fetching cross-origin Google Fonts
+                        backgroundColor: '#f9fafb', // Manually set bg-gray-50
+                    });
+                    
+                    // Create a link to download the canvas as a PNG
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/png');
+                    
+                    // Create a filename
+                    const text = textInput.value.substring(0, 20).trim() || 'preview';
+                    const fontName = fontSelect.value.toLowerCase().replace(/-/g, '_');
+                    link.download = `${fontName}_${text}.png`;
+                    
+                    // Trigger the download
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                } catch (error) {
+                    console.error('Failed to generate image:', error);
+                    // You could show an error modal here
+                } finally {
+                    // Reset button state
+                    downloadBtn.textContent = 'Download PNG';
+                    downloadBtn.disabled = false;
+                }
+            }
+
+            // --- Initialization and Event Listeners ---
+            
+            // 1. Fill the dropdown
+            populateDropdown();
+            
+            // 2. Set the initial state on load
+            updatePreview();
+            
+            // 3. Add event listeners
+            textInput.addEventListener('input', updatePreview);
+            fontSelect.addEventListener('change', updatePreview);
+            downloadBtn.addEventListener('click', downloadPreviewAsPNG);
+            
+            // 4. NEW: Modal Listeners
+            showCreditsBtn.addEventListener('click', () => {
+                creditModal.classList.remove('hidden');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                creditModal.classList.add('hidden');
+            });
+
+            // Optional: Close modal if clicking on the background overlay
+            creditModal.addEventListener('click', (e) => {
+                if (e.target.id === 'credit-modal') {
+                    creditModal.classList.add('hidden');
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>
+
+
