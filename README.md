@@ -1,5 +1,5 @@
 # fontsChn
-## https://zaniest.github.io/fontsChn
+## https://zaniestp.github.io/fontsChn
 
 ****************************************************
 HTML web to generate both Chinese text and PNG files for 
