@@ -3,7 +3,7 @@
 
 ****************************************************
 HTML web to generate both Chinese text and PNG files for 
-support fonts.
+supported unicode fonts.
 *********************************************************
 ```text
       /\_/\
