@@ -1,8 +1,9 @@
 # fontsChn
+## https://zaniest.github.io/fontsChn
 
 ****************************************************
-You may copy the entire folder (Counter) to use.
-
+HTML web to generate both Chinese text and PNG files for 
+support fonts.
 *********************************************************
 ```text
       /\_/\
